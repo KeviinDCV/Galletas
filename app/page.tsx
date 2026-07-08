@@ -678,7 +678,7 @@ export default function Page() {
           }}
         >
           <span style={{ fontWeight: 600, color: "#2B3644" }}>Miga Azul</span>
-          <span>Bogotá, Colombia · Todos los precios en COP</span>
+          <span>Jamundí, Valle del Cauca · Todos los precios en COP</span>
           <span>© 2026 Miga Azul</span>
         </div>
       </footer>

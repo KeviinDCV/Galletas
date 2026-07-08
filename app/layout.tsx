@@ -13,12 +13,12 @@ const outfit = Outfit({
 export const metadata: Metadata = {
   title: "Miga Azul — Galletas artesanales horneadas en casa",
   description:
-    "Galletas suaves y artesanales con ingredientes de verdad. Pide hoy y recibe tus galletas recién horneadas en la puerta de tu casa. Bogotá, Colombia.",
+    "Galletas suaves y artesanales con ingredientes de verdad. Pide hoy y recibe tus galletas recién horneadas en la puerta de tu casa. Jamundí, Valle del Cauca.",
   keywords: [
     "galletas",
     "galletas artesanales",
     "cookies",
-    "Bogotá",
+    "Jamundí",
     "repostería",
     "Miga Azul",
   ],
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Miga Azul — Galletas artesanales",
     description:
-      "Recetas artesanales con ingredientes de verdad, recién horneadas. Envío a domicilio en Bogotá.",
+      "Recetas artesanales con ingredientes de verdad, recién horneadas. Envío a domicilio en Jamundí.",
     type: "website",
     locale: "es_CO",
     siteName: "Miga Azul",
