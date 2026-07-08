@@ -1,0 +1,28 @@
+{
+  "name": "miga-azul",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Landing page de la tienda de galletas Miga Azul (Next.js, lista para Vercel)",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "next": "^15.1.6",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.17.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "^15.1.6",
+    "typescript": "^5.7.0"
+  },
+  "engines": {
+    "node": ">=18.18.0"
+  }
+}
