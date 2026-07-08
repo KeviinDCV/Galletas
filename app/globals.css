@@ -191,6 +191,10 @@ input::placeholder {
   transform: translateY(-4px);
   box-shadow: 0 14px 32px rgba(80, 120, 170, 0.12);
 }
+.product-card:focus-visible {
+  outline: 2px solid color-mix(in oklch, var(--accent), black 25%);
+  outline-offset: 2px;
+}
 
 /* image-slot: el borde punteado se resalta al pasar el cursor (como en Claude Design) */
 .image-slot:hover .image-slot-ring {
@@ -235,8 +239,29 @@ input:focus-visible {
   .hero-title {
     font-size: 36px !important;
   }
+  /* Grid de galletas: mínimo 2 columnas en móvil */
   .products-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px !important;
+  }
+  .product-card {
+    padding: 8px 8px 14px !important;
+    gap: 10px !important;
+  }
+  .product-media {
+    height: 140px !important;
+  }
+  .product-card h3 {
+    font-size: 15.5px !important;
+  }
+  .product-card p {
+    font-size: 12.5px !important;
+  }
+  /* Precio y botón apilados para no desbordar en pantallas angostas */
+  .product-foot {
+    flex-direction: column;
+    align-items: stretch !important;
+    gap: 8px !important;
   }
 }
 

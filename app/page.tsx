@@ -42,7 +42,15 @@ function SlotIcon({ size, style }: { size: number; style?: CSSProperties }) {
  * marco con borde punteado, ícono, leyenda "Foto: …" y "or browse files".
  * Al hacer clic abre el selector de archivos y muestra la imagen elegida.
  */
-function ImageSlot({ radius, label }: { radius: number; label: string }) {
+function ImageSlot({
+  radius,
+  label,
+  interactive = true,
+}: {
+  radius: number;
+  label: string;
+  interactive?: boolean;
+}) {
   const [src, setSrc] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -83,7 +91,7 @@ function ImageSlot({ radius, label }: { radius: number; label: string }) {
             display: "block",
           }}
         />
-      ) : (
+      ) : interactive ? (
         <button
           type="button"
           onClick={() => inputRef.current?.click()}
@@ -111,6 +119,27 @@ function ImageSlot({ radius, label }: { radius: number; label: string }) {
             or <u>browse files</u>
           </span>
         </button>
+      ) : (
+        <div
+          role="img"
+          aria-label={label}
+          style={{
+            position: "absolute",
+            inset: 0,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 6,
+            textAlign: "center",
+            padding: 12,
+            font: "13px/1.3 system-ui, -apple-system, sans-serif",
+            color: "rgba(0,0,0,0.55)",
+          }}
+        >
+          <SlotIcon size={28} />
+          <span style={{ maxWidth: "90%", fontWeight: 500, letterSpacing: "0.01em" }}>{label}</span>
+        </div>
       )}
       {!src && (
         <span
@@ -125,7 +154,9 @@ function ImageSlot({ radius, label }: { radius: number; label: string }) {
           }}
         />
       )}
-      <input ref={inputRef} type="file" accept="image/*" onChange={onPick} style={{ display: "none" }} />
+      {interactive && (
+        <input ref={inputRef} type="file" accept="image/*" onChange={onPick} style={{ display: "none" }} />
+      )}
     </div>
   );
 }
@@ -174,6 +205,7 @@ export default function Page() {
   const [order, setOrder] = useState<{ num: string; total: string; name: string } | null>(null);
   const [newsVal, setNewsVal] = useState("");
   const [newsDone, setNewsDone] = useState(false);
+  const [detailId, setDetailId] = useState<string | null>(null);
 
   const overlayRef = useRef<HTMLElement | null>(null);
   const triggerRef = useRef<HTMLElement | null>(null);
@@ -200,7 +232,8 @@ export default function Page() {
   const total = subtotal + shipping;
   const hasCart = cartCount > 0;
   const cartItems = PRODUCTS.filter((p) => cart[p.id]);
-  const dialogOpen = drawer || step > 0;
+  const detail = detailId ? PRODUCTS.find((p) => p.id === detailId) ?? null : null;
+  const dialogOpen = drawer || step > 0 || detailId !== null;
 
   /* ─────────── checkout ─────────── */
   const startCheckout = () => {
@@ -247,7 +280,8 @@ export default function Page() {
     document.body.style.overflow = dialogOpen ? "hidden" : "";
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== "Escape") return;
-      if (step > 0) closeCheckout();
+      if (detailId) setDetailId(null);
+      else if (step > 0) closeCheckout();
       else if (drawer) setDrawer(false);
     };
     window.addEventListener("keydown", onKey);
@@ -256,7 +290,7 @@ export default function Page() {
       document.body.style.overflow = "";
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [drawer, step]);
+  }, [drawer, step, detailId]);
 
   /* ─────────── overlays: guardar y restaurar el foco del disparador ─────────── */
   useEffect(() => {
@@ -296,7 +330,7 @@ export default function Page() {
     };
     node.addEventListener("keydown", onKey);
     return () => node.removeEventListener("keydown", onKey);
-  }, [drawer, step]);
+  }, [drawer, step, detailId]);
 
   const rootStyle = { "--accent": ACCENT } as unknown as CSSProperties;
 
@@ -527,6 +561,16 @@ export default function Page() {
               <div
                 key={p.id}
                 className="product-card"
+                role="button"
+                tabIndex={0}
+                onClick={() => setDetailId(p.id)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    setDetailId(p.id);
+                  }
+                }}
+                aria-label={`Ver ${p.name}`}
                 style={{
                   background: "#F9FBFE",
                   border: "1px solid #EBF1F8",
@@ -535,10 +579,11 @@ export default function Page() {
                   display: "flex",
                   flexDirection: "column",
                   gap: 14,
+                  cursor: "pointer",
                 }}
               >
-                <div style={{ position: "relative", height: 200 }}>
-                  <ImageSlot radius={14} label={`Foto: ${p.name}`} />
+                <div className="product-media" style={{ position: "relative", height: 200 }}>
+                  <ImageSlot radius={14} label={`Foto: ${p.name}`} interactive={false} />
                   {p.tag && (
                     <span
                       style={{
@@ -564,6 +609,7 @@ export default function Page() {
                   <p style={{ margin: 0, fontSize: 13.5, lineHeight: 1.5, color: "#5F7085" }}>{p.desc}</p>
                 </div>
                 <div
+                  className="product-foot"
                   style={{
                     display: "flex",
                     alignItems: "center",
@@ -576,8 +622,11 @@ export default function Page() {
                     {formatCOP(p.price)}
                   </span>
                   <button
-                    onClick={() => addToCart(p.id)}
-                    className="btn-soft"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      addToCart(p.id);
+                    }}
+                    className="btn-soft product-add"
                     aria-label={`Agregar ${p.name} al carrito`}
                     style={{ padding: "10px 18px", fontSize: 13.5 }}
                   >
@@ -1117,6 +1166,111 @@ export default function Page() {
                 </button>
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* ═══════════ DETALLE DE PRODUCTO (modal) ═══════════ */}
+      {detail && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label={detail.name}
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 65,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: 24,
+          }}
+        >
+          <div
+            onClick={() => setDetailId(null)}
+            style={{
+              position: "absolute",
+              inset: 0,
+              background: "rgba(43,54,68,0.45)",
+              animation: "fadeIn 0.25s ease",
+            }}
+          />
+          <div
+            ref={(el) => {
+              overlayRef.current = el;
+            }}
+            style={{
+              position: "relative",
+              background: "#FFFFFF",
+              borderRadius: 26,
+              width: 480,
+              maxWidth: "100%",
+              maxHeight: "90vh",
+              overflowY: "auto",
+              padding: 24,
+              display: "flex",
+              flexDirection: "column",
+              gap: 18,
+              animation: "popIn 0.3s cubic-bezier(0.22,1,0.36,1)",
+            }}
+          >
+            <div style={{ display: "flex", justifyContent: "flex-end" }}>
+              <button onClick={() => setDetailId(null)} className="icon-btn" aria-label="Cerrar">
+                ✕
+              </button>
+            </div>
+            <div style={{ position: "relative", height: 260 }}>
+              <ImageSlot key={detail.id} radius={18} label={`Foto: ${detail.name}`} />
+              {detail.tag && (
+                <span
+                  style={{
+                    position: "absolute",
+                    top: 12,
+                    left: 12,
+                    background: ACCENT_DARK,
+                    color: "#FFFFFF",
+                    borderRadius: 999,
+                    padding: "5px 12px",
+                    fontSize: 12,
+                    fontWeight: 600,
+                    letterSpacing: "0.03em",
+                    pointerEvents: "none",
+                  }}
+                >
+                  {detail.tag}
+                </span>
+              )}
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              <h3 style={{ margin: 0, fontSize: 24, fontWeight: 700, letterSpacing: "-0.01em" }}>
+                {detail.name}
+              </h3>
+              <p style={{ margin: 0, fontSize: 15, lineHeight: 1.6, color: "#5A6B80" }}>{detail.desc}</p>
+            </div>
+            <div
+              className="product-foot"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: 16,
+                marginTop: 4,
+              }}
+            >
+              <span style={{ fontSize: 26, fontWeight: 700, color: "#3D5A7C" }}>
+                {formatCOP(detail.price)}
+              </span>
+              <button
+                onClick={() => {
+                  addToCart(detail.id);
+                  setDetailId(null);
+                }}
+                className="btn-primary"
+                style={{ padding: "14px 26px", fontSize: 15.5 }}
+              >
+                Agregar al carrito
+              </button>
+            </div>
           </div>
         </div>
       )}
