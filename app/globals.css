@@ -192,6 +192,11 @@ input::placeholder {
   box-shadow: 0 14px 32px rgba(80, 120, 170, 0.12);
 }
 
+/* image-slot: el borde punteado se resalta al pasar el cursor (como en Claude Design) */
+.image-slot:hover .image-slot-ring {
+  border-color: #c96442;
+}
+
 /* Foco visible accesible para navegación con teclado */
 a:focus-visible,
 button:focus-visible,

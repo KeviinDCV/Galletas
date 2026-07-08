@@ -4,8 +4,6 @@ export type Product = {
   desc: string;
   price: number;
   tag: string | null;
-  /** Gradiente del placeholder de imagen (reemplazable por una foto real). */
-  gradient: string;
 };
 
 /* ─────────── Ajustes de marca — edítalos para personalizar la tienda ─────────── */
@@ -28,7 +26,6 @@ export const PRODUCTS: Product[] = [
     desc: "La clásica de siempre, con chips de chocolate 70% y centro suave.",
     price: 8500,
     tag: "Más vendida",
-    gradient: "linear-gradient(135deg, #EAD6B8, #C89F6E)",
   },
   {
     id: "avena",
@@ -36,7 +33,6 @@ export const PRODUCTS: Product[] = [
     desc: "Avena tostada con corazón de arequipe cremoso.",
     price: 8900,
     tag: null,
-    gradient: "linear-gradient(135deg, #ECDCBB, #D6B47F)",
   },
   {
     id: "redvelvet",
@@ -44,7 +40,6 @@ export const PRODUCTS: Product[] = [
     desc: "Masa aterciopelada con trozos de chocolate blanco.",
     price: 9500,
     tag: "Nueva",
-    gradient: "linear-gradient(135deg, #E7BEC6, #C67C8C)",
   },
   {
     id: "mantequilla",
@@ -52,7 +47,6 @@ export const PRODUCTS: Product[] = [
     desc: "Sencilla, dorada y crujiente por fuera, tierna por dentro.",
     price: 6900,
     tag: null,
-    gradient: "linear-gradient(135deg, #F2E6C2, #E0C583)",
   },
   {
     id: "doblechoco",
@@ -60,7 +54,6 @@ export const PRODUCTS: Product[] = [
     desc: "Para amantes del cacao: masa de chocolate con doble chip.",
     price: 9900,
     tag: null,
-    gradient: "linear-gradient(135deg, #C6A484, #86694C)",
   },
   {
     id: "cocolimon",
@@ -68,12 +61,8 @@ export const PRODUCTS: Product[] = [
     desc: "Fresca y tropical, con coco rallado y ralladura de limón.",
     price: 8900,
     tag: null,
-    gradient: "linear-gradient(135deg, #E4EEC6, #C4D888)",
   },
 ];
-
-/** Gradiente del placeholder del hero. */
-export const HERO_GRADIENT = "linear-gradient(135deg, #EAD8BC, #CBA97E)";
 
 /** Formatea un valor numérico como pesos colombianos. */
 export const formatCOP = (n: number) => "$" + n.toLocaleString("es-CO");

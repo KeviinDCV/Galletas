@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import type { CSSProperties } from "react";
+import type { CSSProperties, ChangeEvent } from "react";
 
 const FOCUSABLE =
   'a[href], button:not([disabled]), input:not([disabled]), select, textarea, [tabindex]:not([tabindex="-1"])';
@@ -11,34 +11,155 @@ import {
   FREE_SHIPPING_THRESHOLD,
   SHIPPING_COST,
   PRODUCTS,
-  HERO_GRADIENT,
   formatCOP,
 } from "./config";
 
 const ACCENT_DARK = "color-mix(in oklch, var(--accent), black 30%)";
 
-/** Placeholder de imagen (gradiente limpio). Reemplazable por una foto real. */
-function CookiePlaceholder({
-  gradient,
-  radius,
-  label,
-}: {
-  gradient: string;
-  radius: number;
-  label: string;
-}) {
+/** Ícono de imagen del image-slot (idéntico al de Claude Design). */
+function SlotIcon({ size, style }: { size: number; style?: CSSProperties }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      style={{ opacity: 0.45, ...style }}
+    >
+      <rect x="3" y="3" width="18" height="18" rx="2" />
+      <circle cx="8.5" cy="8.5" r="1.5" />
+      <path d="m21 15-5-5L5 21" />
+    </svg>
+  );
+}
+
+/**
+ * Placeholder de imagen rellenable, réplica del <image-slot> de Claude Design:
+ * marco con borde punteado, ícono, leyenda "Foto: …" y "or browse files".
+ * Al hacer clic abre el selector de archivos y muestra la imagen elegida.
+ */
+function ImageSlot({ radius, label }: { radius: number; label: string }) {
+  const [src, setSrc] = useState<string | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
+  const onPick = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setSrc((prev) => {
+      if (prev) URL.revokeObjectURL(prev);
+      return URL.createObjectURL(file);
+    });
+  };
+  useEffect(() => () => {
+    if (src) URL.revokeObjectURL(src);
+  }, [src]);
+
+  return (
+    <div
+      className="image-slot"
+      style={{
+        position: "absolute",
+        inset: 0,
+        borderRadius: radius,
+        overflow: "hidden",
+        background: "rgba(0,0,0,0.04)",
+      }}
+    >
+      {src ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={src}
+          alt={label}
+          style={{
+            position: "absolute",
+            inset: 0,
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            display: "block",
+          }}
+        />
+      ) : (
+        <button
+          type="button"
+          onClick={() => inputRef.current?.click()}
+          aria-label={`${label} — subir imagen`}
+          style={{
+            position: "absolute",
+            inset: 0,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 6,
+            textAlign: "center",
+            padding: 12,
+            border: "none",
+            background: "transparent",
+            cursor: "pointer",
+            font: "13px/1.3 system-ui, -apple-system, sans-serif",
+            color: "rgba(0,0,0,0.55)",
+          }}
+        >
+          <SlotIcon size={28} />
+          <span style={{ maxWidth: "90%", fontWeight: 500, letterSpacing: "0.01em" }}>{label}</span>
+          <span style={{ fontSize: 11 }}>
+            or <u>browse files</u>
+          </span>
+        </button>
+      )}
+      {!src && (
+        <span
+          className="image-slot-ring"
+          style={{
+            position: "absolute",
+            inset: 0,
+            borderRadius: radius,
+            border: "1.5px dashed rgba(0,0,0,0.25)",
+            pointerEvents: "none",
+            transition: "border-color 0.12s ease",
+          }}
+        />
+      )}
+      <input ref={inputRef} type="file" accept="image/*" onChange={onPick} style={{ display: "none" }} />
+    </div>
+  );
+}
+
+/** Miniatura de imagen (image-slot en pequeño, solo ícono) para el carrito. */
+function ImageThumb({ label }: { label: string }) {
   return (
     <div
       role="img"
       aria-label={label}
       style={{
-        position: "absolute",
-        inset: 0,
-        borderRadius: radius,
-        background: gradient,
-        overflow: "hidden",
+        width: 44,
+        height: 44,
+        borderRadius: 12,
+        position: "relative",
+        flex: "none",
+        background: "rgba(0,0,0,0.04)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        color: "rgba(0,0,0,0.55)",
       }}
-    />
+    >
+      <SlotIcon size={20} />
+      <span
+        style={{
+          position: "absolute",
+          inset: 0,
+          borderRadius: 12,
+          border: "1.5px dashed rgba(0,0,0,0.25)",
+          pointerEvents: "none",
+        }}
+      />
+    </div>
   );
 }
 
@@ -359,11 +480,7 @@ export default function Page() {
               }}
             />
             <div style={{ position: "absolute", inset: "0 12px 12px 0" }}>
-              <CookiePlaceholder
-                gradient={HERO_GRADIENT}
-                radius={28}
-                label="Foto principal de galletas"
-              />
+              <ImageSlot radius={28} label="Foto principal de galletas" />
             </div>
           </div>
         </div>
@@ -421,11 +538,7 @@ export default function Page() {
                 }}
               >
                 <div style={{ position: "relative", height: 200 }}>
-                  <CookiePlaceholder
-                    gradient={p.gradient}
-                    radius={14}
-                    label={`Foto: ${p.name}`}
-                  />
+                  <ImageSlot radius={14} label={`Foto: ${p.name}`} />
                   {p.tag && (
                     <span
                       style={{
@@ -663,17 +776,7 @@ export default function Page() {
                         padding: "12px 14px",
                       }}
                     >
-                      <div
-                        role="img"
-                        aria-label={`Foto: ${p.name}`}
-                        style={{
-                          width: 44,
-                          height: 44,
-                          borderRadius: 12,
-                          background: p.gradient,
-                          flex: "none",
-                        }}
-                      />
+                      <ImageThumb label={`Foto: ${p.name}`} />
                       <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 3, minWidth: 0 }}>
                         <span style={{ fontSize: 14.5, fontWeight: 600 }}>{p.name}</span>
                         <span style={{ fontSize: 13, color: "#5F7085" }}>{formatCOP(p.price)} c/u</span>
