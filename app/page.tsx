@@ -702,8 +702,8 @@ export default function Page() {
           )}
           <p style={{ margin: "6px 0 0", fontSize: 13.5, color: "#4A5B70" }}>
             ¿Pedidos especiales? Escríbenos a{" "}
-            <a href="mailto:hola@migaazul.co" style={{ fontWeight: 600 }}>
-              hola@migaazul.co
+            <a href="mailto:hola@cookiescrunch.co" style={{ fontWeight: 600 }}>
+              hola@cookiescrunch.co
             </a>{" "}
             o al WhatsApp 300 123 4567
           </p>
@@ -726,9 +726,9 @@ export default function Page() {
             flexWrap: "wrap",
           }}
         >
-          <span style={{ fontWeight: 600, color: "#2B3644" }}>Miga Azul</span>
+          <span style={{ fontWeight: 600, color: "#2B3644" }}>Cookies Crunch</span>
           <span>Jamundí, Valle del Cauca · Todos los precios en COP</span>
-          <span>© 2026 Miga Azul</span>
+          <span>© 2026 Cookies Crunch</span>
         </div>
       </footer>
 

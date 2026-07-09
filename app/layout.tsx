@@ -11,7 +11,7 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  title: "Miga Azul — Galletas artesanales horneadas en casa",
+  title: "Cookies Crunch — Galletas artesanales horneadas en casa",
   description:
     "Galletas suaves y artesanales con ingredientes de verdad. Pide hoy y recibe tus galletas recién horneadas en la puerta de tu casa. Jamundí, Valle del Cauca.",
   keywords: [
@@ -20,16 +20,16 @@ export const metadata: Metadata = {
     "cookies",
     "Jamundí",
     "repostería",
-    "Miga Azul",
+    "Cookies Crunch",
   ],
-  authors: [{ name: "Miga Azul" }],
+  authors: [{ name: "Cookies Crunch" }],
   openGraph: {
-    title: "Miga Azul — Galletas artesanales",
+    title: "Cookies Crunch — Galletas artesanales",
     description:
       "Recetas artesanales con ingredientes de verdad, recién horneadas. Envío a domicilio en Jamundí.",
     type: "website",
     locale: "es_CO",
-    siteName: "Miga Azul",
+    siteName: "Cookies Crunch",
   },
 };
 
