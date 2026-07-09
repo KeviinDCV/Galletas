@@ -379,21 +379,21 @@ export default function Page() {
           }}
         >
           <a href="#inicio" style={{ display: "flex", alignItems: "center", gap: 10, color: "#2B3644" }}>
-            <div
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/logo.jpeg"
+              alt="Cookies Crunch"
+              width={38}
+              height={38}
               style={{
-                width: 34,
-                height: 34,
+                width: 38,
+                height: 38,
                 borderRadius: "50%",
-                background: "var(--accent)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: 17,
+                objectFit: "cover",
+                display: "block",
               }}
-            >
-              🍪
-            </div>
-            <span style={{ fontSize: 19, fontWeight: 700, letterSpacing: "-0.01em" }}>Miga Azul</span>
+            />
+            <span style={{ fontSize: 19, fontWeight: 700, letterSpacing: "-0.01em" }}>Cookies Crunch</span>
           </a>
           <nav style={{ display: "flex", alignItems: "center", gap: 26, fontSize: 14.5, fontWeight: 500 }}>
             <a href="#productos" className="nav-link">
